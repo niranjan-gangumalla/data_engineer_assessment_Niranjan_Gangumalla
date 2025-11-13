@@ -53,7 +53,7 @@ class PropertyETL:
         except Exception:
             # loader already logs; continue with empty mapping
             self.field_config = FieldConfig.TABLE_TO_FIELDS or {}
-            self.logger.info("No Field Config loaded (optional).")
+            self.logger.info("No Field Config loaded.")
 
         # Build quick reverse lookup: field_lower -> table (lower)
         self.field_to_table = {}
@@ -62,15 +62,7 @@ class PropertyETL:
                 self.field_to_table[f.strip().lower()] = table.strip().lower()
 
     def _split_records_by_table(self, batch, start_id):
-        """
-        Uses FieldConfig to route fields into:
-          - property (root)
-          - valuation (nested or root)
-          - hoa (nested or root)
-          - rehab (nested or root)
-          - leads (root)
-          - taxes (root)
-        """
+
         property_rows = []
         valuation_rows = []
         hoa_rows = []
@@ -145,7 +137,6 @@ class PropertyETL:
                 validated_prop = PropertyModel.validate_lenient(base).model_dump()
             except Exception as e:
                 self.logger.warning(f"Property validation failed for id {property_id}: {e}")
-                # skip this property entirely (lenient policy: skip unfixable)
                 continue
             property_rows.append(validated_prop)
 
@@ -165,7 +156,7 @@ class PropertyETL:
                 except Exception:
                     self.logger.debug(f"Skipping malformed taxes for property {property_id}")
 
-        # Validate child rows (valuation/hoa/rehab) leniently
+        # Validate child rows (valuation/hoa/rehab)
         validated_valuation = []
         for v in valuation_rows:
             try:
@@ -216,14 +207,6 @@ class PropertyETL:
         self.logger.info(f"Inserted batch of {inserted} records and total {self.inserted_count} records are inserted.")
 
     def run(self):
-        """
-        Orchestrates the full ETL:
-        - Truncate tables (safe)
-        - Stream JSON
-        - Batch records
-        - Process batches
-        - Insert into DB
-        """
 
         # Expand truncate list to include leads & taxes
         truncate_tables = ["valuation", "hoa", "rehab", "leads", "taxes", "property"]
@@ -233,7 +216,7 @@ class PropertyETL:
         except Exception as e:
             self.logger.warning(f"Truncate failed or skipped: {e}")
 
-        self.logger.info("Starting ETL Pipeline...")
+        self.logger.info("Starting ETL Pipeline")
 
         reader = JSONReader(
             file_path=JSON_FILE_PATH,
