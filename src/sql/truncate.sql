@@ -1,0 +1,9 @@
+-- src/db/sql/truncate_tables.sql
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE valuation;
+TRUNCATE TABLE hoa;
+TRUNCATE TABLE rehab;
+TRUNCATE TABLE leads;
+TRUNCATE TABLE taxes;
+TRUNCATE TABLE property;
+SET FOREIGN_KEY_CHECKS = 1;

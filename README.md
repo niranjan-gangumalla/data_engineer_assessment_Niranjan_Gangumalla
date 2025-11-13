@@ -82,3 +82,41 @@ For MySQL Docker image reference:
 ## Solutions and Instructions (Filed by Candidate)
 
 **Document your solution here:**
+
+# Step 1 — Start MySQL using Docker
+
+- From the project root run:'docker-compose -f docker-compose.initial.yml up --build -d'
+
+# Step 2 — Create the Database Tables inside Docker MySQL
+Run the below:
+'Get-Content src/sql/create_tables.sql | docker exec -i mysql_ctn mysql -u db_user -p6equj5_db_user home_db'
+# Step 3 — Install Python Dependencies
+Run : "pip install -r requirements.txt"
+
+# Step 4 — Run the ETL Pipeline
+
+Run : "python src/main.py"
+
+Note run all commands from repo root only.
+
+At the end you may see logs like as below 
+
+"""
+2025-11-13 18:10:52,964 [INFO] PropertyETL: ETL Completed Successfully
+2025-11-13 18:10:52,964 [INFO] PropertyETL: Total JSON Records Read     : 10088
+2025-11-13 18:10:52,964 [INFO] PropertyETL: Successfully Inserted       : 10086
+2025-11-13 18:10:52,964 [INFO] PropertyETL: Malformed JSON Records      : 2
+2025-11-13 18:10:52,974 [INFO] DBService: Table 'property' contains 10086 rows.
+2025-11-13 18:10:52,987 [INFO] DBService: Table 'valuation' contains 24892 rows.
+2025-11-13 18:10:52,997 [INFO] DBService: Table 'hoa' contains 10097 rows.
+2025-11-13 18:10:53,009 [INFO] DBService: Table 'rehab' contains 20213 rows.
+2025-11-13 18:10:53,017 [INFO] DBService: Table 'leads' contains 10086 rows.
+2025-11-13 18:10:53,025 [INFO] DBService: Table 'taxes' contains 10086 rows.
+
+"""
+
+malformed records are stored in audit_logs from where we can analysis the malformed records
+
+
+
+
