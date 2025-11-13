@@ -1,59 +1,48 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class PropertyModel(BaseModel):
     property_id: int
-    property_title: Optional[str] = None
-    address: Optional[str] = None
-    reviewed_status: Optional[str] = None
-    most_recent_status: Optional[str] = None
-    source: Optional[str] = None
-    market: Optional[str] = None
-    occupancy: Optional[str] = None
-    flood: Optional[str] = None
-    street_address: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zip: Optional[str] = None
-    property_type: Optional[str] = None
-    highway: Optional[str] = None
-    train: Optional[str] = None
-    tax_rate: Optional[float] = None
-    sqft_basement: Optional[int] = None
-    htw: Optional[str] = None
-    pool: Optional[str] = None
-    commercial: Optional[str] = None
-    water: Optional[str] = None
-    sewage: Optional[str] = None
-    year_built: Optional[int] = None
-    sqft_mu: Optional[int] = None
-    sqft_total: Optional[str] = None
-    parking: Optional[str] = None
-    bed: Optional[int] = None
-    bath: Optional[int] = None
-    basementyesno: Optional[str] = None
-    layout: Optional[str] = None
-    net_yield: Optional[float] = None
-    irr: Optional[float] = None
-    rent_restricted: Optional[str] = None
-    neighborhood_rating: Optional[int] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    subdivision: Optional[str] = None
-    taxes: Optional[float] = None
-    selling_reason: Optional[str] = None
-    seller_retained_broker: Optional[str] = None
-    final_reviewer: Optional[str] = None
-    school_average: Optional[float] = None
+    property_title: Optional[str] = Field(None, alias="Property_Title")
+    address: Optional[str] = Field(None, alias="Address")
+    market: Optional[str] = Field(None, alias="Market")
+    flood: Optional[str] = Field(None, alias="Flood")
+    street_address: Optional[str] = Field(None, alias="Street_Address")
+    city: Optional[str] = Field(None, alias="City")
+    state: Optional[str] = Field(None, alias="State")
+    zip: Optional[str] = Field(None, alias="Zip")
+    property_type: Optional[str] = Field(None, alias="Property_Type")
+    highway: Optional[str] = Field(None, alias="Highway")
+    train: Optional[str] = Field(None, alias="Train")
+    tax_rate: Optional[float] = Field(None, alias="Tax_Rate")
+    sqft_basement: Optional[int] = Field(None, alias="SQFT_Basement")
+    htw: Optional[str] = Field(None, alias="HTW")
+    pool: Optional[str] = Field(None, alias="Pool")
+    commercial: Optional[str] = Field(None, alias="Commercial")
+    water: Optional[str] = Field(None, alias="Water")
+    sewage: Optional[str] = Field(None, alias="Sewage")
+    year_built: Optional[int] = Field(None, alias="Year_Built")
+    sqft_mu: Optional[int] = Field(None, alias="SQFT_MU")
+    sqft_total: Optional[int] = Field(None, alias="SQFT_Total")
+    parking: Optional[str] = Field(None, alias="Parking")
+    bed: Optional[int] = Field(None, alias="Bed")
+    bath: Optional[int] = Field(None, alias="Bath")
+    basementyesno: Optional[str] = Field(None, alias="BasementYesNo")
+    layout: Optional[str] = Field(None, alias="Layout")
+    rent_restricted: Optional[str] = Field(None, alias="Rent_Restricted")
+    neighborhood_rating: Optional[int] = Field(None, alias="Neighborhood_Rating")
+    latitude: Optional[float] = Field(None, alias="Latitude")
+    longitude: Optional[float] = Field(None, alias="Longitude")
+    subdivision: Optional[str] = Field(None, alias="Subdivision")
+    school_average: Optional[float] = Field(None, alias="School_Average")
 
-    @validator("zip", pre=True, always=True)
-    def coerce_zip(cls, v):
-        if v in (None, ""):
-            return None
-        return str(v)
+    class Config:
+        allow_population_by_field_name = True
 
     @classmethod
     def validate_lenient(cls, data: dict):
+        d = dict(data)  # copy input dict
+
         def try_int(x):
             try:
                 if x is None or x == "":
@@ -70,13 +59,25 @@ class PropertyModel(BaseModel):
             except Exception:
                 return None
 
-        data = dict(data)
-        for k in ["property_id", "sqft_basement", "year_built", "sqft_mu", "bed", "bath", "neighborhood_rating"]:
-            if k in data:
-                data[k] = try_int(data.get(k))
+        # Fields to convert to int
+        for k in [
+            "Property_ID", "SQFT_Basement", "Year_Built", "SQFT_MU","SQFT_Total", "Bed", "Bath", "Neighborhood_Rating"
+        ]:
+            if k in d:
+                d[k] = try_int(d.get(k))
 
-        for k in ["tax_rate", "net_yield", "irr", "latitude", "longitude", "taxes", "school_average"]:
-            if k in data:
-                data[k] = try_float(data.get(k))
+        # Fields to convert to float
+        for k in [
+            "Tax_Rate", "Latitude", "Longitude", "School_Average"
+        ]:
+            if k in d:
+                d[k] = try_float(d.get(k))
 
-        return cls(**data)
+        # Coerce zip to string if present and not None or empty
+        if "Zip" in d:
+            if d["Zip"] in (None, ""):
+                d["Zip"] = None
+            else:
+                d["Zip"] = str(d["Zip"])
+
+        return cls(**d)

@@ -2,11 +2,7 @@ CREATE TABLE property (
     property_id INT PRIMARY KEY,
     property_title VARCHAR(255),
     address VARCHAR(255),
-    reviewed_status VARCHAR(50),
-    most_recent_status VARCHAR(50),
-    source VARCHAR(100),
     market VARCHAR(100),
-    occupancy VARCHAR(50),
     flood VARCHAR(50),
     street_address VARCHAR(255),
     city VARCHAR(100),
@@ -30,19 +26,14 @@ CREATE TABLE property (
     bath INT,
     basementyesno VARCHAR(50),
     layout VARCHAR(100),
-    net_yield DOUBLE,
-    irr DOUBLE,
     rent_restricted VARCHAR(50),
     neighborhood_rating INT,
     latitude DOUBLE,
     longitude DOUBLE,
     subdivision VARCHAR(255),
-    taxes DOUBLE,
-    selling_reason VARCHAR(255),
-    seller_retained_broker VARCHAR(255),
-    final_reviewer VARCHAR(255),
     school_average DOUBLE
 );
+
 
 CREATE TABLE valuation (
     valuation_id INT AUTO_INCREMENT PRIMARY KEY,
