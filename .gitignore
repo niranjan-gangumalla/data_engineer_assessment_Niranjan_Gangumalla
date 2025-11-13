@@ -1,0 +1,26 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+build/
+dist/
+.eggs/
+
+# Virtual Environments
+venv/
+.env/
+.envrc
+.venv/
+env/
+ENV/
+.*.swp
+
+# Jupyter
+.ipynb_checkpoints/
