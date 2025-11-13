@@ -117,6 +117,10 @@ At the end you may see logs like as below
 
 malformed records are stored in audit_logs from where we can analysis the malformed records
 
+# stop the docker mysql_ctn
+
+'docker stop mysql_ctn'
+
 
 
 

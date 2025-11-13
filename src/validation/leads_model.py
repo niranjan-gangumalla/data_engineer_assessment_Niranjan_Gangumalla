@@ -1,4 +1,3 @@
-# src/validation/leads_model.py
 from pydantic import BaseModel
 from typing import Optional
 

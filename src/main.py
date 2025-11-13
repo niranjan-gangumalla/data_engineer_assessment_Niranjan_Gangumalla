@@ -1,4 +1,3 @@
-# src/main.py
 from json_parser.json_reader import JSONReader
 from json_parser.json_parser import JSONParser
 from services.db_factory import DBFactory
@@ -6,7 +5,6 @@ from services.db_service import DBService
 from utils.config import JSON_FILE_PATH, MALFORMED_PATH, BATCH_SIZE, DB_CONFIG
 from utils.logger_service import get_logger
 from utils.field_config_loader import FieldConfig
-
 # Pydantic validators
 from validation.property_model import PropertyModel
 from validation.valuation_model import ValuationModel
@@ -83,7 +81,7 @@ class PropertyETL:
         for index, item in enumerate(batch, start=start_id):
             property_id = index
 
-            # 1) Extract nested lists (these are lists under nested keys)
+            # Extract nested lists (these are lists under nested keys)
             nested_vals = JSONParser.extract_nested([item], "Valuation", property_id)
             nested_hoas = JSONParser.extract_nested([item], "HOA", property_id)
             nested_rehabs = JSONParser.extract_nested([item], "Rehab", property_id)
@@ -93,7 +91,7 @@ class PropertyETL:
             hoa_rows += nested_hoas
             rehab_rows += nested_rehabs
 
-            # 2) Prepare dictionaries for root-level routed fields
+            # Prepare dictionaries for root-level routed fields
             base = {"property_id": property_id}
             leads_obj = {"property_id": property_id}
             taxes_obj = {"property_id": property_id}
@@ -142,7 +140,6 @@ class PropertyETL:
             if len([x for x in root_rehab_obj.keys() if x != "property_id"]) > 0:
                 rehab_rows.append(root_rehab_obj)
 
-            # --- VALIDATION (Option B: lenient/autocorrect) ---
             # Property
             try:
                 validated_prop = PropertyModel.validate_lenient(base).model_dump()
@@ -153,7 +150,6 @@ class PropertyETL:
             property_rows.append(validated_prop)
 
             # Leads
-            # Note: leads_obj may contain mostly None if no leads fields were present
             if len([k for k in leads_obj.keys() if k != "property_id"]) > 0:
                 try:
                     validated_leads = LeadsModel.validate_lenient(leads_obj).model_dump()
@@ -256,12 +252,10 @@ class PropertyETL:
             self._process_batch(remaining)
 
         # Log summary
-        self.logger.info("----------------------------------------")
         self.logger.info("ETL Completed Successfully")
         self.logger.info(f"Total JSON Records Read     : {reader.total_records}")
         self.logger.info(f"Successfully Inserted       : {self.inserted_count}")
         self.logger.info(f"Malformed JSON Records      : {len(reader.malformed_records)}")
-        self.logger.info("----------------------------------------")
 
         # Show DB row counts (include leads & taxes)
         self.db_service.log_table_counts(["property", "valuation", "hoa", "rehab", "leads", "taxes"])

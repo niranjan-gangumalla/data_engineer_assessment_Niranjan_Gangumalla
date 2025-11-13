@@ -1,4 +1,3 @@
-# src/validation/property_model.py
 from pydantic import BaseModel, validator
 from typing import Optional
 
@@ -55,7 +54,6 @@ class PropertyModel(BaseModel):
 
     @classmethod
     def validate_lenient(cls, data: dict):
-        # Coerce basic numeric-like values; leave others as None if invalid
         def try_int(x):
             try:
                 if x is None or x == "":
@@ -81,5 +79,4 @@ class PropertyModel(BaseModel):
             if k in data:
                 data[k] = try_float(data.get(k))
 
-        # Pydantic will fill missing optional keys automatically
         return cls(**data)

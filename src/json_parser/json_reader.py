@@ -4,10 +4,6 @@ from typing import Generator, Dict, List
 from utils.logger_service import get_logger
 
 class JSONReader:
-    """
-    Streams JSON objects from file without loading everything into memory.
-    Tracks and writes malformed records separately.
-    """
 
     def __init__(self, file_path: str, malformed_path: str):
         self.file_path = file_path

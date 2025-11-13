@@ -1,6 +1,5 @@
 from typing import List, Dict
 
-
 class JSONParser:
 
     @staticmethod

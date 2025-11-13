@@ -1,7 +1,6 @@
 import pandas as pd
 from utils.logger_service import get_logger
 
-
 class FieldConfig:
     TABLE_TO_FIELDS = {}
     FIELDS_LOWER = set()

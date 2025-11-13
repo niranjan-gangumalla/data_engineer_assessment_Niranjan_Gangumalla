@@ -1,4 +1,3 @@
--- src/db/sql/create_tables.sql
 CREATE TABLE property (
     property_id INT PRIMARY KEY,
     property_title VARCHAR(255),

@@ -1,4 +1,3 @@
--- src/db/sql/truncate_tables.sql
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE valuation;
 TRUNCATE TABLE hoa;
