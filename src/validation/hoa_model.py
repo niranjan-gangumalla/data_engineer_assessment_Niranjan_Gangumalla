@@ -7,8 +7,9 @@ class HOAModel(BaseModel):
     hoa: Optional[float] = Field(None, alias="HOA")
     hoa_flag: Optional[str] = Field(None, alias="HOA_Flag")
 
-    class Config:
-        allow_population_by_field_name = True  # allows cls(**data) with either alias or field name
+    model_config = {
+        "validate_by_name": True
+    }
 
     @classmethod
     def validate_lenient(cls, data: dict):

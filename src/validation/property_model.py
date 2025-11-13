@@ -36,8 +36,9 @@ class PropertyModel(BaseModel):
     subdivision: Optional[str] = Field(None, alias="Subdivision")
     school_average: Optional[float] = Field(None, alias="School_Average")
 
-    class Config:
-        allow_population_by_field_name = True
+    model_config = {
+        "validate_by_name": True
+    }
 
     @classmethod
     def validate_lenient(cls, data: dict):
